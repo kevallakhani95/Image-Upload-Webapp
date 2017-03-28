@@ -14,15 +14,20 @@
 	</style>
 </head>
 	<body>
+		<?php
+			session_start();
+			echo '<div class=center>
+						<h2>Hello '.$_SESSION['userSession'].'</h2> 
+					</div><hr>';
+		?>
 		<form method="post" enctype="multipart/form-data" class="form-horizontal">
      
 			<table class="table table-bordered table-responsive">
 	 			
 	 			<tr>
-					<td colspan="2"><input  type="submit" value="Logout" name="btnlogout" />
-					</td>
+					<td colspan="2"><input  type="submit" value="Logout" name="btnlogout" /></td>
 				</tr>
-
+				<br>
 	 			<tr>
 					<td colspan="2"><input  type="submit" value="My account" name="btnaccount" />
 					</td>
@@ -48,7 +53,6 @@
 	
 		<?php
 			$valid_extensions = array('jpeg', 'jpg', 'png', 'gif');         // Extensions that are valid
-			session_start();
 
 			if(isset($_POST['btnlogout']))
 			{
@@ -92,10 +96,10 @@
 			function saveimage($caption, $image)
 			{
 				require 'dbonn.php';										// Establish connection
-				
+				$capt = htmlspecialchars($caption);
 				$usrName = $_SESSION['userSession'];						// Accepting the username from session variable
 				
-				$qry = "insert into pics (Pic, Capt, Username, Time) values ('$image','$caption', '$usrName', NOW())";		// Insert query to insert into database
+				$qry = "insert into pics (Pic, Capt, Username, Time) values ('$image','$capt', '$usrName', NOW())";		// Insert query to insert into database
 				$result = $conn->query($qry);
 				
 				if(!$result)
@@ -142,11 +146,13 @@
 				while($row = mysqli_fetch_array($result))											// Display all images
 				{
 					echo 																					
-					'<div class=center>
+					'<hr width="60%"><div class=center>
+						<p>by <b><i>'.$row[3].'</i></b></p>
 						<img height="200" width="200" src="data:image;base64,'.$row[1].'" >
-						<h1>'.$row[2].'</h1>
+						<h3>'.$row[2].'</h3> 
 					</div>';
-					echo "<br/><br/></br></br>";
+					echo "</br></br>";
+
 				}
 
 				if( $page == 0 && $rec_count > 10) 													// Calculations to take care of pagination
